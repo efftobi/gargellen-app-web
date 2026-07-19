@@ -1,12 +1,13 @@
 /* Schischule Gargellen — Service Worker */
-const CACHE = 'gargellen-v1';
+const CACHE = 'gargellen-v2';
 const SHELL = [
   './',
   './index.html',
   './manifest.webmanifest',
   './icons/icon-192.png',
   './icons/icon-512.png',
-  './icons/favicon.svg'
+  './icons/favicon.svg',
+  './icons/logo.png'
 ];
 
 self.addEventListener('install', e => {
@@ -38,7 +39,7 @@ self.addEventListener('fetch', e => {
   // Shell & Fonts: Cache zuerst, dann Netz (und nachcachen)
   e.respondWith(
     caches.match(e.request).then(hit => hit || fetch(e.request).then(r => {
-      if (e.request.method === 'GET' && (url.origin === location.origin || url.hostname.includes('fonts.'))) {
+      if (e.request.method === 'GET' && (url.origin === location.origin || url.hostname.includes('fonts.') || url.hostname === 'www.schischule-gargellen.at')) {
         const copy = r.clone();
         caches.open(CACHE).then(c => c.put(e.request, copy));
       }

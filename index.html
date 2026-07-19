@@ -58,6 +58,14 @@ p.note{font-size:12.5px;color:var(--grey);line-height:1.55;margin:6px 2px}
 .tile{position:relative;display:flex;align-items:flex-end;padding:12px 14px;color:var(--white);cursor:pointer;
       overflow:hidden;border:none;width:100%;text-align:left}
 .tile .word{font-family:'Quicksand',sans-serif;font-weight:500;font-size:24px;text-shadow:0 1px 8px rgba(0,0,0,.45);z-index:2}
+.photo{background-size:cover,cover;background-position:center,center}
+.ph-hero{background-image:url("https://www.schischule-gargellen.at/templates/schischulegargellen-copy/images/shop_bild.jpg"),linear-gradient(180deg,#8db8d8,#dceaf4)}
+.ph-kinder{background-image:url("https://www.schischule-gargellen.at/templates/schischulegargellen-copy/images/kinder_bild_black.jpg"),linear-gradient(180deg,#6ea3c9,#b8d4e8)}
+.ph-erwachsene{background-image:url("https://www.schischule-gargellen.at/templates/schischulegargellen-copy/images/erwachsene_bild_black.jpg"),linear-gradient(180deg,#4d7fa8,#9cc0dc)}
+.ph-snowboard{background-image:url("https://www.schischule-gargellen.at/templates/schischulegargellen-copy/images/snowboard_bild_black.jpg"),linear-gradient(180deg,#87b2d4,#cfe2f0)}
+.ph-privat{background-image:url("https://www.schischule-gargellen.at/templates/schischulegargellen-copy/images/privat_bild_black.jpg"),linear-gradient(180deg,#4d7fa8,#9cc0dc)}
+.ph-schitour{background-image:url("https://www.schischule-gargellen.at/templates/schischulegargellen-copy/images/gruppenschitour_bild_black.jpg"),linear-gradient(180deg,#8db8d8,#dceaf4)}
+.ph-special{background-image:url("https://www.schischule-gargellen.at/templates/schischulegargellen-copy/images/special_bild_black.jpg"),linear-gradient(180deg,#6ea3c9,#b8d4e8)}
 .snow1{background:linear-gradient(180deg,var(--sky1) 0%,var(--sky2) 55%,#fff 56%,#eef4f9 100%)}
 .snow2{background:linear-gradient(180deg,#6ea3c9 0%,#b8d4e8 50%,#fff 51%,#e8f0f7 100%)}
 .snow3{background:linear-gradient(180deg,#4d7fa8 0%,#9cc0dc 45%,#fff 46%,#f2f6fa 100%)}
@@ -161,27 +169,21 @@ footer.app{padding:26px 16px 18px;color:var(--grey);font-size:10.5px;line-height
 
 <!-- ======================= APP BAR ======================= -->
 <div class="appbar" onclick="go('home')">
-  <svg viewBox="0 0 66 60" fill="none" aria-label="Logo">
-    <path d="M14 44 C2 40 2 28 14 24 C26 20 30 14 24 8" stroke="#000" stroke-width="7" stroke-linecap="round" fill="none"/>
-    <path d="M34 50 C22 46 22 34 34 30 C46 26 50 20 44 14" stroke="#000" stroke-width="7" stroke-linecap="round" fill="none"/>
-    <path d="M2 55 L56 41" stroke="#000" stroke-width="3" stroke-linecap="round"/>
-    <path d="M6 59.5 L60 45.5" stroke="#000" stroke-width="3" stroke-linecap="round"/>
-  </svg>
-  <div class="t"><b>SCHISCHULE</b><span>GARGELLEN</span></div>
+  <img src="icons/logo.png" alt="Schischule Gargellen" style="height:36px;width:auto">
   <div class="season" id="seasonInfo">Saison 25/26<br>14.12.–12.04.</div>
 </div>
 
 <!-- ======================= START ======================= -->
 <div class="view on" id="v-home">
   <div class="pad">
-    <div class="tile hero snow1 peak" onclick="go('heute')"><div class="word q" id="heroWord">Willkommen!</div></div>
+    <div class="tile hero photo ph-hero" onclick="go('heute')"><div class="word q" id="heroWord">Willkommen!</div></div>
     <div class="grid">
-      <button class="tile snow2" onclick="go('kurse','sec-kinder')"><span class="word q">Kinder</span></button>
-      <button class="tile snow3" onclick="go('kurse','sec-erwachsene')"><span class="word q">Erwachsene</span></button>
-      <button class="tile snow4" onclick="go('kurse','sec-snowboard')"><span class="word q">Snowboard</span></button>
-      <button class="tile snow3" onclick="go('kurse','sec-privat')"><span class="word q">Privat</span></button>
-      <button class="tile snow1" onclick="go('kurse','sec-schitour')"><span class="word q">Schitour</span></button>
-      <button class="tile snow2" onclick="go('kurse','sec-specials')"><span class="word q">Special</span></button>
+      <button class="tile photo ph-kinder" onclick="go('kurse','sec-kinder')"><span class="word q">Kinder</span></button>
+      <button class="tile photo ph-erwachsene" onclick="go('kurse','sec-erwachsene')"><span class="word q">Erwachsene</span></button>
+      <button class="tile photo ph-snowboard" onclick="go('kurse','sec-snowboard')"><span class="word q">Snowboard</span></button>
+      <button class="tile photo ph-privat" onclick="go('kurse','sec-privat')"><span class="word q">Privat</span></button>
+      <button class="tile photo ph-schitour" onclick="go('kurse','sec-schitour')"><span class="word q">Schitour</span></button>
+      <button class="tile photo ph-special" onclick="go('kurse','sec-specials')"><span class="word q">Special</span></button>
     </div>
 
     <div class="blackbox">
