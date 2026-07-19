@@ -1,0 +1,617 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Schischule Gargellen</title>
+<meta name="description" content="Die App der Schischule Gargellen im Montafon: Kurse, Mein Kurs, Schmuggi Luggi Levels, Wetter & Lawinenlage.">
+<meta name="theme-color" content="#000000">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icons/favicon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="icons/icon-192.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black">
+<meta name="apple-mobile-web-app-title" content="Gargellen">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Raleway:wght@400;500;600;700;800&family=Quicksand:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --black:#000; --white:#fff; --grey:#595959; --light:#f0f0f0; --line:#e2e2e2;
+  --sky1:#8db8d8; --sky2:#dceaf4; --sky3:#5e8fb5;
+  --lo:#f28c1e; --lg:#7ec242; --lb:#2e9bd6; --lr:#e84b3c;
+  --tabh:62px;
+}
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html{scroll-behavior:smooth}
+body{font-family:'Raleway',sans-serif;background:var(--white);color:var(--black);max-width:560px;margin:0 auto;
+     padding-bottom:calc(var(--tabh) + env(safe-area-inset-bottom));min-height:100vh}
+.q{font-family:'Quicksand',sans-serif}
+a{color:inherit}
+
+/* ===== App-Bar ===== */
+.appbar{position:sticky;top:0;z-index:50;display:flex;align-items:center;gap:10px;padding:12px 16px 10px;
+        background:rgba(255,255,255,.96);backdrop-filter:blur(6px);border-bottom:1px solid var(--line)}
+.appbar svg{height:30px;width:auto;flex:0 0 auto}
+.appbar .t b{display:block;font-size:13px;font-weight:800;letter-spacing:.9px}
+.appbar .t span{display:block;font-size:9px;font-weight:600;letter-spacing:3px}
+.appbar .season{margin-left:auto;font-size:9.5px;color:var(--grey);text-align:right;line-height:1.35}
+
+/* ===== Tabbar ===== */
+.tabbar{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:560px;z-index:60;
+        display:flex;background:var(--black);color:var(--white);padding:8px 4px calc(8px + env(safe-area-inset-bottom))}
+.tabbar button{flex:1;background:none;border:none;color:var(--white);opacity:.5;font-family:'Raleway',sans-serif;
+        font-size:9.5px;font-weight:600;letter-spacing:.3px;cursor:pointer;padding:2px 0}
+.tabbar button .ico{display:block;font-size:17px;margin-bottom:2px}
+.tabbar button.on{opacity:1}
+
+/* ===== Views ===== */
+.view{display:none;animation:fade .18s ease}
+.view.on{display:block}
+@keyframes fade{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:none}}
+.pad{padding:14px 14px 24px}
+h2.sec{font-size:12px;font-weight:800;letter-spacing:2px;margin:20px 2px 10px}
+h2.sec:first-child{margin-top:4px}
+p.note{font-size:12.5px;color:var(--grey);line-height:1.55;margin:6px 2px}
+
+/* ===== Kacheln ===== */
+.tile{position:relative;display:flex;align-items:flex-end;padding:12px 14px;color:var(--white);cursor:pointer;
+      overflow:hidden;border:none;width:100%;text-align:left}
+.tile .word{font-family:'Quicksand',sans-serif;font-weight:500;font-size:24px;text-shadow:0 1px 8px rgba(0,0,0,.45);z-index:2}
+.snow1{background:linear-gradient(180deg,var(--sky1) 0%,var(--sky2) 55%,#fff 56%,#eef4f9 100%)}
+.snow2{background:linear-gradient(180deg,#6ea3c9 0%,#b8d4e8 50%,#fff 51%,#e8f0f7 100%)}
+.snow3{background:linear-gradient(180deg,#4d7fa8 0%,#9cc0dc 45%,#fff 46%,#f2f6fa 100%)}
+.snow4{background:linear-gradient(180deg,#87b2d4 0%,#cfe2f0 60%,#fff 61%,#eaf1f8 100%)}
+.peak:before{content:"";position:absolute;left:-12%;bottom:40%;border-left:110px solid transparent;border-right:140px solid transparent;border-bottom:85px solid rgba(255,255,255,.9)}
+.peak:after{content:"";position:absolute;right:-15%;bottom:38%;border-left:150px solid transparent;border-right:100px solid transparent;border-bottom:105px solid rgba(255,255,255,.72)}
+.hero{height:120px}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-top:7px}
+.grid .tile{height:96px}
+.grid .tile .word{font-size:19px}
+
+/* ===== Boxen & Buttons ===== */
+.blackbox{background:var(--black);color:var(--white);padding:13px 15px;margin-top:10px}
+.blackbox h4{font-size:10.5px;letter-spacing:1.6px;font-weight:700;margin-bottom:5px}
+.blackbox p{font-size:12px;line-height:1.5;color:#dcdcdc}
+.cta{display:inline-block;margin-top:9px;margin-right:8px;font-size:10.5px;font-weight:700;letter-spacing:1px;
+     border:1px solid currentColor;padding:6px 12px;text-decoration:none;background:none;color:inherit;
+     font-family:'Raleway',sans-serif;cursor:pointer}
+.cta.dark{color:var(--black)}
+.card{border:1px solid var(--line);padding:12px 14px;margin-top:8px;font-size:12.5px;line-height:1.55}
+.card b.k{display:block;font-size:10px;letter-spacing:1.4px;color:var(--grey);margin-bottom:4px;font-weight:700}
+.card h3{font-size:14.5px;margin-bottom:3px}
+.hint{background:var(--light);border-left:3px solid var(--black);padding:9px 12px;margin-top:8px;font-size:12px;line-height:1.5}
+table.lv{width:100%;border-collapse:collapse;margin-top:6px;font-size:12px}
+table.lv td{border-top:1px solid var(--line);padding:6px 6px 6px 0;vertical-align:top}
+table.lv td:first-child{font-weight:800;white-space:nowrap;padding-right:10px}
+
+/* ===== Level-Assistent ===== */
+.quiz .opt{display:block;width:100%;text-align:left;border:1px solid var(--line);background:#fff;padding:10px 12px;
+    margin-top:6px;font-family:'Raleway',sans-serif;font-size:12.5px;cursor:pointer}
+.quiz .opt:hover{border-color:var(--black)}
+.result-lv{font-family:'Quicksand',sans-serif;font-size:30px;font-weight:700}
+
+/* ===== Ticket ===== */
+.ticket{border:2px solid var(--black);margin-top:10px}
+.ticket .th{background:var(--black);color:var(--white);padding:10px 14px;display:flex;justify-content:space-between;align-items:center}
+.ticket .th b{font-size:12px;letter-spacing:1px}
+.ticket .th span{font-size:10px;color:#bbb}
+.ticket .tb{padding:12px 14px;display:flex;gap:14px;align-items:center}
+.code{flex:0 0 auto;width:76px;height:76px;background:
+   repeating-linear-gradient(0deg,#000 0 5px,transparent 5px 10px),
+   repeating-linear-gradient(90deg,#000 0 5px,#fff 5px 10px);
+   display:flex;align-items:center;justify-content:center}
+.code span{background:#fff;font-size:10px;font-weight:800;padding:2px 4px;letter-spacing:1px}
+.ticket .ti{font-size:12px;line-height:1.6}
+.ticket .ti b{font-size:13.5px}
+label.f{display:block;font-size:10px;font-weight:700;letter-spacing:1.2px;color:var(--grey);margin:10px 2px 4px}
+input.f,select.f{width:100%;border:1px solid var(--line);padding:9px 10px;font-family:'Raleway',sans-serif;font-size:13px;background:#fff;border-radius:0;-webkit-appearance:none;appearance:none}
+select.f{background-image:linear-gradient(45deg,transparent 50%,#000 50%),linear-gradient(135deg,#000 50%,transparent 50%);background-position:calc(100% - 18px) 50%,calc(100% - 13px) 50%;background-size:5px 5px;background-repeat:no-repeat}
+.chkrow{display:flex;align-items:center;gap:10px;border:1px solid var(--line);padding:9px 12px;margin-top:6px;font-size:12.5px;cursor:pointer}
+.chkrow input{width:16px;height:16px;accent-color:#000}
+
+/* ===== Levels (Kinderbereich — bunt) ===== */
+.kids-head{background:linear-gradient(135deg,var(--lb),#66c3ee);color:#fff;padding:16px;position:relative}
+.kids-head h3{font-family:'Quicksand',sans-serif;font-size:19px;font-weight:700}
+.kids-head p{font-size:11px;opacity:.95;margin-top:2px}
+.luggi{position:absolute;right:14px;top:12px;width:48px;height:48px;background:var(--lo);border-radius:50%;
+       display:flex;align-items:center;justify-content:center;font-size:26px;border:3px solid #fff}
+.lvlrow{display:flex;gap:8px;padding:14px 2px 4px;justify-content:space-between}
+.lvl{flex:1;text-align:center;border:none;background:none;cursor:pointer;font-family:'Raleway',sans-serif}
+.badge{width:50px;height:50px;margin:0 auto;border-radius:50%;display:flex;align-items:center;justify-content:center;
+       font-family:'Quicksand',sans-serif;font-weight:700;font-size:14px;color:#fff;line-height:1}
+.b-done{background:var(--lg);border:3px solid #5da32b}
+.b-now{background:var(--lo);border:3px solid #d0740e;box-shadow:0 0 0 3px rgba(242,140,30,.25)}
+.b-todo{background:#e3e3e3;color:#9a9a9a;border:3px solid #cfcfcf}
+.lvl span{display:block;font-size:9px;margin-top:4px;color:var(--grey);font-weight:600}
+.goal{border:1px solid var(--line);border-radius:10px;padding:10px 12px;font-size:12.5px;display:flex;align-items:center;gap:10px;margin-top:7px;cursor:pointer}
+.goal .chk{width:20px;height:20px;flex:0 0 20px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;color:#fff;background:#d9d9d9}
+.goal.done .chk{background:var(--lg)}
+.goal.done{background:#f4fbee;border-color:#cfe8b8}
+.medal{background:linear-gradient(135deg,#fff4e3,#ffe7c4);border:1px solid #f2c98c;border-radius:10px;padding:12px 14px;font-size:12.5px;line-height:1.55;margin-top:10px}
+.medal b{color:#b06a10}
+
+/* ===== Heute ===== */
+.wx{background:var(--black);color:#fff;padding:14px 16px;margin-top:8px;display:flex;align-items:center;gap:16px}
+.wx .deg{font-size:34px;font-weight:800;min-width:74px}
+.wx .d{font-size:11.5px;line-height:1.55;color:#d5d5d5}
+.days{display:grid;grid-template-columns:repeat(3,1fr);gap:7px;margin-top:8px}
+.day{border:1px solid var(--line);padding:9px 10px;font-size:11px;text-align:center;line-height:1.5}
+.day b{display:block;font-size:11px}
+.day .sn{color:var(--lb);font-weight:700}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-top:8px}
+.info{border:1px solid var(--line);padding:11px 12px;font-size:11.5px;line-height:1.5;text-decoration:none;display:block}
+.info b{display:block;font-size:9.5px;letter-spacing:1.2px;color:var(--grey);margin-bottom:3px}
+.info .big{display:block;font-size:14px;font-weight:700;white-space:nowrap;margin-bottom:2px}
+
+/* ===== Mehr ===== */
+.mrow{display:flex;align-items:center;gap:12px;border-bottom:1px solid var(--line);padding:13px 4px;font-size:13.5px;text-decoration:none}
+.mrow .mi{font-size:17px;width:24px;text-align:center}
+.mrow span{margin-left:auto;color:var(--grey)}
+details.faq{border-bottom:1px solid var(--line);padding:11px 2px;font-size:13px}
+details.faq summary{font-weight:700;cursor:pointer;list-style:none}
+details.faq summary:after{content:"+";float:right;color:var(--grey)}
+details.faq[open] summary:after{content:"–"}
+details.faq p{margin-top:7px;color:var(--grey);font-size:12.5px;line-height:1.55}
+.demo{display:inline-block;background:var(--lo);color:#fff;font-size:8.5px;font-weight:800;letter-spacing:1px;padding:2px 6px;border-radius:3px;vertical-align:2px}
+footer.app{padding:26px 16px 18px;color:var(--grey);font-size:10.5px;line-height:1.6;text-align:center}
+</style>
+</head>
+<body>
+
+<!-- ======================= APP BAR ======================= -->
+<div class="appbar" onclick="go('home')">
+  <svg viewBox="0 0 66 60" fill="none" aria-label="Logo">
+    <path d="M14 44 C2 40 2 28 14 24 C26 20 30 14 24 8" stroke="#000" stroke-width="7" stroke-linecap="round" fill="none"/>
+    <path d="M34 50 C22 46 22 34 34 30 C46 26 50 20 44 14" stroke="#000" stroke-width="7" stroke-linecap="round" fill="none"/>
+    <path d="M2 55 L56 41" stroke="#000" stroke-width="3" stroke-linecap="round"/>
+    <path d="M6 59.5 L60 45.5" stroke="#000" stroke-width="3" stroke-linecap="round"/>
+  </svg>
+  <div class="t"><b>SCHISCHULE</b><span>GARGELLEN</span></div>
+  <div class="season" id="seasonInfo">Saison 25/26<br>14.12.–12.04.</div>
+</div>
+
+<!-- ======================= START ======================= -->
+<div class="view on" id="v-home">
+  <div class="pad">
+    <div class="tile hero snow1 peak" onclick="go('heute')"><div class="word q" id="heroWord">Willkommen!</div></div>
+    <div class="grid">
+      <button class="tile snow2" onclick="go('kurse','sec-kinder')"><span class="word q">Kinder</span></button>
+      <button class="tile snow3" onclick="go('kurse','sec-erwachsene')"><span class="word q">Erwachsene</span></button>
+      <button class="tile snow4" onclick="go('kurse','sec-snowboard')"><span class="word q">Snowboard</span></button>
+      <button class="tile snow3" onclick="go('kurse','sec-privat')"><span class="word q">Privat</span></button>
+      <button class="tile snow1" onclick="go('kurse','sec-schitour')"><span class="word q">Schitour</span></button>
+      <button class="tile snow2" onclick="go('kurse','sec-specials')"><span class="word q">Special</span></button>
+    </div>
+
+    <div class="blackbox">
+      <h4>EARLY BIRD PRIVATSTUNDE</h4>
+      <p>09:00–10:00 Uhr um € 98,00 — die frisch präparierte Piste gehört Ihnen.</p>
+      <a class="cta" href="https://www.schischule-gargellen.at/de/online-shop" target="_blank" rel="noopener">-&gt; BUCHEN</a>
+      <a class="cta" href="mailto:info@schischule-gargellen.at?subject=Early%20Bird%20Privatstunde">-&gt; ANFRAGEN</a>
+    </div>
+
+    <div class="card" style="cursor:pointer" onclick="go('levels')">
+      <b class="k">FÜR KINDER</b>
+      <h3>🎿 Schmuggi Luggi Levels</h3>
+      Abzeichen sammeln von K1 bis K5 — den Fortschritt direkt in der App verfolgen.
+    </div>
+    <div class="card" style="cursor:pointer" onclick="go('ticket')">
+      <b class="k">MEIN KURS</b>
+      <h3>🎟 Kursticket &amp; Treffpunkt</h3>
+      Buchung eintragen, Treffpunkt checken, Checkliste für morgen früh.
+    </div>
+
+    <h2 class="sec">GUT ZU WISSEN</h2>
+    <div class="hint"><b>Gruppenkurse bitte online buchen</b> — im Online-Shop der Schischule. 2. Kurseinheit am selben Tag: <b>25 % Rabatt</b>.</div>
+    <div class="hint"><b>Treffpunkte:</b> Anfänger im Schmuggi Luggi Kinderland (Tal) · Fortgeschrittene an der Bergstation der Gondel.</div>
+  </div>
+</div>
+
+<!-- ======================= KURSE ======================= -->
+<div class="view" id="v-kurse">
+  <div class="pad">
+    <h2 class="sec" style="margin-top:4px">KURS FINDEN</h2>
+    <div class="card quiz" id="quizBox">
+      <b class="k">LEVEL-ASSISTENT</b>
+      <div id="quizBody"></div>
+    </div>
+
+    <h2 class="sec" id="sec-kinder">KINDER &amp; JUGEND</h2>
+    <div class="card">
+      <h3>Birdycourse <span style="font-weight:500;color:var(--grey)">· 4–5 Jahre</span></h3>
+      Spielerischer Einstieg im Schmuggi Luggi Kinderland mit Ski-Karussell und Seillift.
+    </div>
+    <div class="card">
+      <h3>Kinderkurse <span style="font-weight:500;color:var(--grey)">· 5–15 Jahre · Level K1–K5</span></h3>
+      <table class="lv">
+        <tr><td>K1</td><td>Erste Schwünge im Kinderland, Seillift &amp; Karussell</td></tr>
+        <tr><td>K2</td><td>Pflugbogen, erste blaue Pisten vom Berg</td></tr>
+        <tr><td>K3</td><td>Blaue &amp; rote Pisten, paralleles Fahren beginnt</td></tr>
+        <tr><td>K4</td><td>Paralleles Skisteuern, rote Pisten sicher</td></tr>
+        <tr><td>K5</td><td>Dynamisch &amp; sportlich — schwarze Pisten, Gelände</td></tr>
+      </table>
+      <div class="hint" style="margin-top:10px">Vormittag 10:00–12:00 · Nachmittag 13:00–15:00 · Ganztag für K2–K5.<br>
+      <b>Mittagsbetreuung:</b> € 15,00/Tag (nicht bei Anfängerkursen).</div>
+      <a class="cta dark" href="https://www.schischule-gargellen.at/de/online-shop" target="_blank" rel="noopener">-&gt; BUCHEN</a>
+    </div>
+
+    <h2 class="sec" id="sec-erwachsene">ERWACHSENE</h2>
+    <div class="card">
+      <h3>Gruppenkurse <span style="font-weight:500;color:var(--grey)">· Level E1–E5</span></h3>
+      <table class="lv">
+        <tr><td>E1</td><td>Anfänger — Übungsgelände</td></tr>
+        <tr><td>E2</td><td>Pflugdrehen &amp; Beidrehen auf blauen Pisten</td></tr>
+        <tr><td>E3</td><td>Paralleles Skisteuern auf roten Pisten</td></tr>
+        <tr><td>E4</td><td>Dynamisch parallel mit Stockeinsatz, rote Pisten</td></tr>
+        <tr><td>E5</td><td>Carving &amp; Offpiste auf schwarzen Pisten</td></tr>
+      </table>
+      <div class="hint" style="margin-top:10px">E1–E4 vormittags 10:00–12:00 · E5 nachmittags 13:00–15:00.<br>
+      Anfänger starten Mo oder Mi · Fortgeschrittene So–Mi.</div>
+      <a class="cta dark" href="https://www.schischule-gargellen.at/de/online-shop" target="_blank" rel="noopener">-&gt; BUCHEN</a>
+    </div>
+
+    <h2 class="sec" id="sec-snowboard">SNOWBOARD</h2>
+    <div class="card">
+      <h3>Snowboardkurse</h3>
+      Für Anfänger und Fortgeschrittene — vom ersten Rutschen bis zum sicheren Turn.
+      <br><a class="cta dark" href="https://www.schischule-gargellen.at/de/online-shop" target="_blank" rel="noopener">-&gt; BUCHEN</a>
+    </div>
+
+    <h2 class="sec" id="sec-privat">PRIVAT</h2>
+    <div class="card">
+      <h3>Privatstunden</h3>
+      Individuell für jedes Alter und Können — Ski oder Snowboard.
+      <div class="hint" style="margin-top:10px"><b>Early Bird:</b> 09:00–10:00 Uhr um € 98,00 — vor allen anderen auf der Piste.</div>
+      <a class="cta dark" href="mailto:info@schischule-gargellen.at?subject=Privatstunde">-&gt; ANFRAGEN</a>
+    </div>
+
+    <h2 class="sec" id="sec-schitour">SCHITOUR</h2>
+    <div class="card">
+      <h3>Schitouren &amp; Abseits der Piste</h3>
+      Geführte Touren im Montafon und Kurse für sicheres Fahren im freien Gelände — mit den Bergprofis der Schischule. Vorher immer: <a href="https://warndienste.cnv.at/dibos/lawine/" target="_blank" rel="noopener"><b>Lawinenlagebericht</b></a> checken.
+      <br><a class="cta dark" href="mailto:info@schischule-gargellen.at?subject=Schitour">-&gt; ANFRAGEN</a>
+    </div>
+
+    <h2 class="sec" id="sec-specials">SPECIALS</h2>
+    <div class="card">
+      <h3>Specials</h3>
+      Besondere Angebote der Saison — aktuelle Infos im Büro oder auf der Website.
+      <br><a class="cta dark" href="https://www.schischule-gargellen.at/de/specials" target="_blank" rel="noopener">-&gt; ZUR WEBSITE</a>
+    </div>
+
+    <div class="blackbox">
+      <h4>PREISLISTE 2025/26</h4>
+      <p>Alle Kurspreise als PDF auf der Website der Schischule.</p>
+      <a class="cta" href="https://www.schischule-gargellen.at/images/Preisliste_de25-26.pdf" target="_blank" rel="noopener">-&gt; PREISLISTE ÖFFNEN</a>
+    </div>
+  </div>
+</div>
+
+<!-- ======================= MEIN KURS ======================= -->
+<div class="view" id="v-ticket">
+  <div class="pad">
+    <h2 class="sec" style="margin-top:4px">MEIN KURSTICKET <span class="demo">LOKAL</span></h2>
+    <p class="note">Trag deine Buchung aus der Bestätigungs-Mail ein — die App merkt sie sich auf diesem Gerät.</p>
+
+    <div id="ticketBox" style="display:none">
+      <div class="ticket">
+        <div class="th"><b id="tTitle">KURS</b><span id="tDays"></span></div>
+        <div class="tb">
+          <div class="code"><span id="tCode"></span></div>
+          <div class="ti" id="tInfo"></div>
+        </div>
+      </div>
+      <div class="hint" id="tMeet"></div>
+      <a class="cta dark" id="tMap" target="_blank" rel="noopener">-&gt; TREFFPUNKT IN KARTE</a>
+      <button class="cta dark" onclick="editTicket()">-&gt; BEARBEITEN</button>
+    </div>
+
+    <div id="ticketForm">
+      <label class="f">NAME TEILNEHMER/IN</label>
+      <input class="f" id="fName" placeholder="z. B. Lena">
+      <label class="f">KURS</label>
+      <select class="f" id="fKurs">
+        <option>Birdycourse (4–5 J.)</option>
+        <option>Kinderkurs K1</option><option>Kinderkurs K2</option><option>Kinderkurs K3</option>
+        <option>Kinderkurs K4</option><option>Kinderkurs K5</option>
+        <option>Erwachsene E1</option><option>Erwachsene E2</option><option>Erwachsene E3</option>
+        <option>Erwachsene E4</option><option>Erwachsene E5</option>
+        <option>Snowboard Anfänger</option><option>Snowboard Fortgeschritten</option>
+        <option>Privatstunde</option><option>Early Bird Privatstunde</option><option>Schitour</option>
+      </select>
+      <label class="f">ZEIT</label>
+      <select class="f" id="fZeit">
+        <option>Vormittag 10:00–12:00</option>
+        <option>Nachmittag 13:00–15:00</option>
+        <option>Ganztag 10–12 &amp; 13–15</option>
+        <option>Early Bird 09:00–10:00</option>
+        <option>Nach Vereinbarung</option>
+      </select>
+      <label class="f">ERSTER KURSTAG</label>
+      <input class="f" id="fDatum" type="date">
+      <label class="f">BUCHUNGSCODE (AUS DER MAIL)</label>
+      <input class="f" id="fCode" placeholder="z. B. GRG-2431">
+      <label class="chkrow"><input type="checkbox" id="fMittag"> Mittagsbetreuung gebucht (€ 15/Tag)</label>
+      <button class="cta dark" onclick="saveTicket()">-&gt; TICKET ANLEGEN</button>
+    </div>
+
+    <h2 class="sec">CHECKLISTE FÜR MORGEN</h2>
+    <div id="checklist"></div>
+
+    <div class="blackbox">
+      <h4>ÄNDERUNG ODER FRAGE ZUM KURS?</h4>
+      <p>Büro: So–Mo 08:30–12:00 &amp; 14:30–17:00 · Di–Fr 14:30–17:00 · Sa 14:00–18:00</p>
+      <a class="cta" href="tel:+4355576401">-&gt; ANRUFEN</a>
+      <a class="cta" href="mailto:info@schischule-gargellen.at">-&gt; E-MAIL</a>
+    </div>
+  </div>
+</div>
+
+<!-- ======================= LEVELS ======================= -->
+<div class="view" id="v-levels">
+  <div class="kids-head">
+    <div class="luggi">🎿</div>
+    <h3>Schmuggi Luggi Levels</h3>
+    <p id="lvlSub">Sammle deine Abzeichen von K1 bis K5!</p>
+  </div>
+  <div class="pad">
+    <div class="lvlrow" id="lvlRow"></div>
+    <p class="note" style="text-align:center">Tippe auf ein Level, um die Lernziele zu sehen. <span class="demo">LOKAL</span></p>
+    <div id="goalBox"></div>
+    <div class="medal" id="raceBox">
+      <b>🏁 Abschlussrennen</b><br>
+      Jeden Freitag um 14:30 — danach Siegerehrung mit Urkunde und deinem neuen Abzeichen!
+    </div>
+    <div class="card">
+      <b class="k">FÜR ERWACHSENE</b>
+      Die Levels E1–E5 findest du unter <a href="#" onclick="go('kurse','sec-erwachsene');return false"><b>Kurse → Erwachsene</b></a> — der Level-Assistent hilft bei der Einstufung.
+    </div>
+  </div>
+</div>
+
+<!-- ======================= HEUTE ======================= -->
+<div class="view" id="v-heute">
+  <div class="pad">
+    <h2 class="sec" style="margin-top:4px">GARGELLEN HEUTE</h2>
+    <div class="wx">
+      <div class="deg" id="wxTemp">–°</div>
+      <div class="d" id="wxDesc">Wetter wird geladen …<br><span style="opacity:.7">Quelle: Open-Meteo (1.423 m)</span></div>
+    </div>
+    <div class="days" id="wxDays"></div>
+
+    <div class="grid2">
+      <a class="info" href="https://warndienste.cnv.at/dibos/lawine/" target="_blank" rel="noopener">
+        <b>LAWINENLAGE</b><span class="big">Bericht&nbsp;öffnen&nbsp;-&gt;</span>Warndienst Vorarlberg
+      </a>
+      <a class="info" href="https://www.bergfex.at/gargellen/wetter/" target="_blank" rel="noopener">
+        <b>BERGWETTER</b><span class="big">bergfex&nbsp;-&gt;</span>Detailprognose Gargellen
+      </a>
+      <a class="info" href="https://www.bergfex.at/gargellen/webcams/" target="_blank" rel="noopener">
+        <b>WEBCAMS</b><span class="big">Live-Bilder&nbsp;-&gt;</span>Schafberg &amp; Tal
+      </a>
+      <a class="info" href="https://www.bergbahnen-gargellen.at" target="_blank" rel="noopener">
+        <b>LIFTE &amp; PISTEN</b><span class="big">Bergbahnen&nbsp;-&gt;</span>Status &amp; Panoramakarte
+      </a>
+    </div>
+
+    <h2 class="sec">SCHISCHULE AKTUELL</h2>
+    <div class="hint"><b>Treffpunkte heute:</b> Anfänger 9:50 Uhr im Schmuggi Luggi Kinderland · Fortgeschrittene 9:50 Uhr an der Bergstation.</div>
+    <div class="hint">🏁 Freitags Abschlussrennen um 14:30, Siegerehrung 15:30 im Kinderland.</div>
+
+    <div class="blackbox">
+      <h4>BÜRO HEUTE</h4>
+      <p id="officeToday">…</p>
+      <a class="cta" href="tel:+4355576401">-&gt; ANRUFEN</a>
+    </div>
+  </div>
+</div>
+
+<!-- ======================= MEHR ======================= -->
+<div class="view" id="v-mehr">
+  <div class="pad">
+    <h2 class="sec" style="margin-top:4px">KONTAKT</h2>
+    <a class="mrow" href="tel:+4355576401"><span class="mi">📞</span>+43 5557 6401<span>-&gt;</span></a>
+    <a class="mrow" href="mailto:info@schischule-gargellen.at"><span class="mi">✉️</span>info@schischule-gargellen.at<span>-&gt;</span></a>
+    <a class="mrow" href="https://maps.google.com/?q=Gargellnerstrasse+28a,+6787+Gargellen" target="_blank" rel="noopener"><span class="mi">📍</span>Gargellnerstrasse 28a, 6787 Gargellen<span>-&gt;</span></a>
+    <a class="mrow" href="https://www.schischule-gargellen.at/de/" target="_blank" rel="noopener"><span class="mi">🌐</span>schischule-gargellen.at<span>-&gt;</span></a>
+
+    <h2 class="sec">ÖFFNUNGSZEITEN BÜRO</h2>
+    <div class="card">So &amp; Mo 08:30–12:00 und 14:30–17:00<br>Di–Fr 14:30–17:00<br>Sa 14:00–18:00<br>
+    <span style="color:var(--grey)">Saison 2025/26: 14.12.2025 – 12.04.2026 · Am 01.01. keine Kurse.</span></div>
+
+    <h2 class="sec">HÄUFIGE FRAGEN</h2>
+    <details class="faq"><summary>Wo ist der Treffpunkt am ersten Tag?</summary><p>Anfänger (Kinder und Erwachsene) treffen sich im Schmuggi Luggi Kinderland im Tal. Alle Fortgeschrittenen an der Bergstation der Gondel — bitte 10 Minuten vor Kursbeginn da sein.</p></details>
+    <details class="faq"><summary>Muss ich Gruppenkurse online buchen?</summary><p>Ja, Gruppenkurse werden verbindlich über den Online-Shop gebucht. Das Kursticket kommt per E-Mail.</p></details>
+    <details class="faq"><summary>Gibt es Mittagsbetreuung für Kinder?</summary><p>Ja, für € 15,00 pro Tag und Kind — buchbar zu regulären Kursen (nicht bei Anfängerkursen).</p></details>
+    <details class="faq"><summary>Gibt es Rabatt bei zwei Einheiten pro Tag?</summary><p>Ja — wer zwei Kurseinheiten am selben Tag bucht, erhält 25 % Rabatt auf die zweite Einheit.</p></details>
+    <details class="faq"><summary>Was passiert bei schlechtem Wetter?</summary><p>Die Kurse finden grundsätzlich bei jedem Wetter statt. Bei Sturm oder Lawinengefahr informiert die Schischule — im Zweifel kurz im Büro anrufen.</p></details>
+
+    <h2 class="sec">TEAM &amp; JOBS</h2>
+    <div class="card">Die Schischule Gargellen ist eine mittelgroße Skischule im Vorarlberger Skilehrerverband mit 42 Ski- und Snowboardlehrern. Schischulleiter: Andreas Lippitsch.
+    <br><a class="cta dark" href="https://www.schischule-gargellen.at/de/job1" target="_blank" rel="noopener">-&gt; SKILEHRER/IN WERDEN</a></div>
+
+    <h2 class="sec">RECHTLICHES</h2>
+    <a class="mrow" href="https://www.schischule-gargellen.at/de/impressum" target="_blank" rel="noopener"><span class="mi">§</span>Impressum<span>-&gt;</span></a>
+    <a class="mrow" href="https://www.schischule-gargellen.at/de/datenschutzerkl%C3%A4rung" target="_blank" rel="noopener"><span class="mi">🔒</span>Datenschutzerklärung<span>-&gt;</span></a>
+    <a class="mrow" href="https://www.schischule-gargellen.at/de/agbs" target="_blank" rel="noopener"><span class="mi">📄</span>AGBs<span>-&gt;</span></a>
+  </div>
+</div>
+
+<footer class="app">
+  Schischule Gargellen GmbH · Gargellnerstrasse 28a · 6787 Gargellen<br>
+  Inoffizieller Prototyp · Wetterdaten: Open-Meteo · Alle Angaben ohne Gewähr
+</footer>
+
+<!-- ======================= TABBAR ======================= -->
+<div class="tabbar">
+  <button id="tab-home" class="on" onclick="go('home')"><span class="ico">⌂</span>Start</button>
+  <button id="tab-kurse" onclick="go('kurse')"><span class="ico">🎿</span>Kurse</button>
+  <button id="tab-ticket" onclick="go('ticket')"><span class="ico">🎟</span>Mein Kurs</button>
+  <button id="tab-levels" onclick="go('levels')"><span class="ico">🏅</span>Levels</button>
+  <button id="tab-heute" onclick="go('heute')"><span class="ico">☀️</span>Heute</button>
+  <button id="tab-mehr" onclick="go('mehr')"><span class="ico">☰</span>Mehr</button>
+</div>
+
+<script>
+/* =============== Navigation =============== */
+function go(view, anchor){
+  document.querySelectorAll('.view').forEach(v=>v.classList.remove('on'));
+  document.getElementById('v-'+view).classList.add('on');
+  document.querySelectorAll('.tabbar button').forEach(b=>b.classList.remove('on'));
+  const tb=document.getElementById('tab-'+view); if(tb) tb.classList.add('on');
+  window.scrollTo({top:0});
+  if(anchor){setTimeout(()=>{const el=document.getElementById(anchor); if(el) el.scrollIntoView({behavior:'smooth',block:'start'});},60);}
+}
+
+/* =============== Begrüßung + Saison =============== */
+(function(){
+  const h=new Date().getHours();
+  document.getElementById('heroWord').textContent = h<11?'Guten Morgen!':(h<17?'Willkommen!':'Guten Abend!');
+})();
+
+/* =============== Level-Assistent =============== */
+const QUIZ=[
+  {q:"Wie oft standen Sie schon auf Skiern?",a:[["Noch nie / vor sehr langer Zeit",0],["Ein paar Wochen",1],["Viele Jahre",2]]},
+  {q:"Welche Pisten fahren Sie sicher?",a:[["Übungsgelände / blaue",0],["Rote Pisten",1],["Schwarze Pisten & Gelände",2]]},
+  {q:"Wie fahren Sie Ihre Schwünge?",a:[["Im Pflug",0],["Meist parallel",1],["Parallel & dynamisch (Carving)",2]]}
+];
+let qi=0,qs=0;
+function renderQuiz(){
+  const b=document.getElementById('quizBody');
+  if(qi>=QUIZ.length){
+    const lv=Math.min(5,Math.max(1,Math.round(qs/2)+1));
+    b.innerHTML='<p style="font-size:12.5px;margin-bottom:4px">Unsere Empfehlung für Erwachsene:</p>'+
+      '<div class="result-lv">Level E'+lv+'</div>'+
+      '<p style="font-size:12px;color:var(--grey)">Kinder: entsprechendes Level K'+lv+'. Die endgültige Einstufung macht das Skilehrer-Team am ersten Tag.</p>'+
+      '<button class="cta dark" onclick="qi=0;qs=0;renderQuiz()">-&gt; NOCHMAL</button>'+
+      '<a class="cta dark" href="https://www.schischule-gargellen.at/de/online-shop" target="_blank" rel="noopener">-&gt; BUCHEN</a>';
+    return;
+  }
+  const item=QUIZ[qi];
+  b.innerHTML='<p style="font-size:13px;font-weight:700;margin:4px 0 2px">'+(qi+1)+'/3 · '+item.q+'</p>'+
+    item.a.map(x=>'<button class="opt" onclick="qs+='+x[1]+';qi++;renderQuiz()">'+x[0]+'</button>').join('');
+}
+renderQuiz();
+
+/* =============== Mein Kurs (localStorage) =============== */
+const LS='gargellen.';
+function saveTicket(){
+  const t={
+    name:document.getElementById('fName').value.trim()||'Gast',
+    kurs:document.getElementById('fKurs').value,
+    zeit:document.getElementById('fZeit').value,
+    datum:document.getElementById('fDatum').value,
+    code:document.getElementById('fCode').value.trim().toUpperCase()||'GRG-0000',
+    mittag:document.getElementById('fMittag').checked
+  };
+  localStorage.setItem(LS+'ticket',JSON.stringify(t));
+  renderTicket();
+}
+function editTicket(){
+  document.getElementById('ticketForm').style.display='block';
+  document.getElementById('ticketBox').style.display='none';
+}
+function renderTicket(){
+  const raw=localStorage.getItem(LS+'ticket');
+  if(!raw) return;
+  const t=JSON.parse(raw);
+  const anf=/K1|E1|E2|Birdy|Anfänger/.test(t.kurs);
+  document.getElementById('tTitle').textContent=t.kurs.toUpperCase();
+  document.getElementById('tDays').textContent=t.datum?new Date(t.datum+'T00:00').toLocaleDateString('de-AT',{weekday:'short',day:'2-digit',month:'2-digit'}):'';
+  document.getElementById('tCode').textContent=t.code;
+  document.getElementById('tInfo').innerHTML='<b>'+t.name+'</b><br>'+t.zeit+(t.mittag?'<br>+ Mittagsbetreuung ✓':'');
+  document.getElementById('tMeet').innerHTML='<b>Treffpunkt:</b> '+(anf?'Schmuggi Luggi Kinderland (Tal), 10 Min. vor Kursbeginn':'Bergstation der Gondel, 10 Min. vor Kursbeginn — Liftkarte nicht vergessen!');
+  document.getElementById('tMap').href=anf?'https://maps.google.com/?q=Schmuggi+Luggi+Kinderland+Gargellen':'https://maps.google.com/?q=Bergbahnen+Gargellen+Bergstation';
+  document.getElementById('ticketForm').style.display='none';
+  document.getElementById('ticketBox').style.display='block';
+}
+renderTicket();
+
+/* Checkliste */
+const CHECK=['Helm','Skischuhe & Ski / Board','Liftkarte','Handschuhe & Skibrille','Sonnencreme','Kursticket / Buchungscode','Kleines Taschengeld für die Hütte'];
+function renderCheck(){
+  const done=JSON.parse(localStorage.getItem(LS+'check')||'[]');
+  document.getElementById('checklist').innerHTML=CHECK.map((c,i)=>
+    '<label class="chkrow"><input type="checkbox" '+(done.includes(i)?'checked':'')+' onchange="toggleCheck('+i+')"> '+c+'</label>').join('');
+}
+function toggleCheck(i){
+  let done=JSON.parse(localStorage.getItem(LS+'check')||'[]');
+  done=done.includes(i)?done.filter(x=>x!==i):done.concat(i);
+  localStorage.setItem(LS+'check',JSON.stringify(done));
+}
+renderCheck();
+
+/* =============== Schmuggi Luggi Levels =============== */
+const GOALS={
+  1:['Sicher stehen & fallen ohne Angst','Fahren mit Karussell & Seillift','Erste Schwünge im Kinderland'],
+  2:['Pflugbogen links und rechts','Fahren mit dem Tellerlift','Erste blaue Piste vom Berg'],
+  3:['Blaue Pisten sicher & flüssig','Erste rote Piste','Schwünge werden paralleler'],
+  4:['Rote Pisten sicher parallel','Kurze Schwünge im Rhythmus','Erste Buckel & kleine Sprünge'],
+  5:['Schwarze Pisten & steiles Gelände','Carving-Schwünge','Sicher im freien Gelände neben der Piste']
+};
+function lvState(){return JSON.parse(localStorage.getItem(LS+'levels')||'{"current":2,"goals":{}}');}
+function lvSave(s){localStorage.setItem(LS+'levels',JSON.stringify(s));}
+let shownLv=null;
+function renderLevels(){
+  const s=lvState();
+  shownLv=shownLv||s.current;
+  document.getElementById('lvlRow').innerHTML=[1,2,3,4,5].map(l=>{
+    const cls=l<s.current?'b-done':(l===s.current?'b-now':'b-todo');
+    const lbl=l<s.current?'Geschafft!':(l===s.current?'Dran!':'–');
+    return '<button class="lvl" onclick="shownLv='+l+';renderLevels()"><span class="badge '+cls+'" style="'+(shownLv===l?'transform:scale(1.12)':'')+'">K'+l+'</span><span>'+lbl+'</span></button>';
+  }).join('');
+  const g=s.goals[shownLv]||[];
+  document.getElementById('goalBox').innerHTML=
+    '<h2 class="sec" style="margin-top:12px">LERNZIELE LEVEL K'+shownLv+'</h2>'+
+    GOALS[shownLv].map((txt,i)=>{
+      const d=g.includes(i);
+      return '<div class="goal'+(d?' done':'')+'" onclick="toggleGoal('+shownLv+','+i+')"><div class="chk">'+(d?'✓':'')+'</div>'+txt+'</div>';
+    }).join('')+
+    (GOALS[shownLv].every((_,i)=>g.includes(i)) && shownLv===s.current
+      ?'<div class="medal"><b>🏅 Alle Ziele geschafft!</b><br>Beim Abschlussrennen gibt es dein K'+shownLv+'-Abzeichen — weiter zu Level K'+Math.min(5,shownLv+1)+'! <button class="cta dark" onclick="levelUp()">-&gt; ABZEICHEN ABHOLEN</button></div>':'');
+  document.getElementById('lvlSub').textContent='Level K'+s.current+' — auf zum nächsten Abzeichen!';
+}
+function toggleGoal(l,i){
+  const s=lvState(); s.goals[l]=s.goals[l]||[];
+  s.goals[l]=s.goals[l].includes(i)?s.goals[l].filter(x=>x!==i):s.goals[l].concat(i);
+  lvSave(s); renderLevels();
+}
+function levelUp(){
+  const s=lvState(); if(s.current<5){s.current++; shownLv=s.current;} lvSave(s); renderLevels();
+}
+renderLevels();
+
+/* =============== Wetter (Open-Meteo, Gargellen 1.423 m) =============== */
+const WMO={0:'Klar & sonnig',1:'Überwiegend sonnig',2:'Teils bewölkt',3:'Bedeckt',45:'Nebel',48:'Nebel (Reif)',51:'Leichter Niesel',53:'Niesel',55:'Starker Niesel',61:'Leichter Regen',63:'Regen',65:'Starker Regen',66:'Gefr. Regen',67:'Gefr. Regen',71:'Leichter Schneefall',73:'Schneefall',75:'Starker Schneefall',77:'Schneegriesel',80:'Regenschauer',81:'Regenschauer',82:'Starke Schauer',85:'Schneeschauer',86:'Starke Schneeschauer',95:'Gewitter',96:'Gewitter',99:'Gewitter'};
+async function loadWeather(){
+  try{
+    const u='https://api.open-meteo.com/v1/forecast?latitude=46.9769&longitude=9.9182&elevation=1423'+
+      '&current=temperature_2m,weather_code,wind_speed_10m'+
+      '&daily=temperature_2m_min,temperature_2m_max,snowfall_sum,weather_code&forecast_days=3&timezone=Europe%2FVienna';
+    const r=await fetch(u); const d=await r.json();
+    const c=d.current;
+    document.getElementById('wxTemp').textContent=Math.round(c.temperature_2m)+'°';
+    document.getElementById('wxDesc').innerHTML=(WMO[c.weather_code]||'—')+'<br>Wind '+Math.round(c.wind_speed_10m)+' km/h · Gargellen 1.423 m<br><span style="opacity:.7">Open-Meteo · '+new Date().toLocaleTimeString('de-AT',{hour:'2-digit',minute:'2-digit'})+'</span>';
+    const names=['Heute','Morgen',new Date(Date.now()+2*864e5).toLocaleDateString('de-AT',{weekday:'long'})];
+    document.getElementById('wxDays').innerHTML=d.daily.time.map((t,i)=>
+      '<div class="day"><b>'+names[i]+'</b>'+Math.round(d.daily.temperature_2m_min[i])+'° / '+Math.round(d.daily.temperature_2m_max[i])+'°<br>'+
+      (d.daily.snowfall_sum[i]>0?'<span class="sn">❄ '+d.daily.snowfall_sum[i].toFixed(0)+' cm Neuschnee</span>':(WMO[d.daily.weather_code[i]]||''))+'</div>').join('');
+  }catch(e){
+    document.getElementById('wxDesc').innerHTML='Wetter derzeit nicht verfügbar (offline?).<br><a href="https://www.bergfex.at/gargellen/wetter/" target="_blank" rel="noopener" style="color:#fff"><b>-&gt; bergfex öffnen</b></a>';
+  }
+}
+loadWeather();
+
+/* Büro heute */
+(function(){
+  const d=new Date().getDay(); // 0=So
+  const t=(d===0||d===1)?'Heute geöffnet: 08:30–12:00 & 14:30–17:00':(d===6?'Heute geöffnet: 14:00–18:00':'Heute geöffnet: 14:30–17:00');
+  document.getElementById('officeToday').textContent=t+' · +43 5557 6401';
+})();
+
+/* =============== Service Worker =============== */
+if('serviceWorker' in navigator){navigator.serviceWorker.register('sw.js');}
+</script>
+</body>
+</html>

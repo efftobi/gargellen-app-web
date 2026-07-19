@@ -1,0 +1,16 @@
+{
+  "name": "Schischule Gargellen",
+  "short_name": "Gargellen",
+  "description": "Kurse, Kursticket, Schmuggi Luggi Levels, Wetter & Lawinenlage — die App der Schischule Gargellen im Montafon.",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#000000",
+  "lang": "de",
+  "icons": [
+    { "src": "icons/icon-192.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "icons/icon-512.png", "sizes": "512x512", "type": "image/png" },
+    { "src": "icons/icon-512-maskable.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ]
+}
