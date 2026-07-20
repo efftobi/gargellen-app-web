@@ -92,6 +92,11 @@ p.note{font-size:12.5px;color:var(--grey);line-height:1.55;margin:6px 2px}
 table.lv{width:100%;border-collapse:collapse;margin-top:6px;font-size:12px}
 table.lv td{border-top:1px solid var(--line);padding:6px 6px 6px 0;vertical-align:top}
 table.lv td:first-child{font-weight:800;white-space:nowrap;padding-right:10px}
+table.pr{width:100%;border-collapse:collapse;margin-top:4px;font-size:12.5px}
+table.pr td{border-top:1px solid var(--line);padding:7px 0;vertical-align:top}
+table.pr tr:first-child td{border-top:none}
+table.pr td:last-child{text-align:right;white-space:nowrap;font-weight:800;padding-left:10px}
+table.pr td .sub{display:block;font-size:10.5px;color:var(--grey);margin-top:1px}
 
 /* ===== Level-Assistent ===== */
 .quiz .opt{display:block;width:100%;text-align:left;border:1px solid var(--line);background:#fff;padding:10px 12px;
@@ -203,6 +208,11 @@ footer.app{padding:26px 16px 18px;color:var(--grey);font-size:10.5px;line-height
       <h3>🎟 Kursticket &amp; Treffpunkt</h3>
       Buchung eintragen, Treffpunkt checken, Checkliste für morgen früh.
     </div>
+    <div class="card" style="cursor:pointer" onclick="go('preise')">
+      <b class="k">PREISE 2025/26</b>
+      <h3>💶 Preisliste</h3>
+      Alle Kurspreise auf einen Blick — vom Kükenkurs bis zur Privatstunde.
+    </div>
 
     <h2 class="sec">GUT ZU WISSEN</h2>
     <div class="hint"><b>Gruppenkurse bitte online buchen</b> — im Online-Shop der Schischule. 2. Kurseinheit am selben Tag: <b>25 % Rabatt</b>.</div>
@@ -284,9 +294,120 @@ footer.app{padding:26px 16px 18px;color:var(--grey);font-size:10.5px;line-height
 
     <div class="blackbox">
       <h4>PREISLISTE 2025/26</h4>
-      <p>Alle Kurspreise als PDF auf der Website der Schischule.</p>
-      <a class="cta" href="https://www.schischule-gargellen.at/images/Preisliste_de25-26.pdf" target="_blank" rel="noopener">-&gt; PREISLISTE ÖFFNEN</a>
+      <p>Alle Kurspreise aus dem Online-Shop — direkt hier in der App.</p>
+      <button class="cta" onclick="go('preise')">-&gt; ZUR PREISLISTE</button>
+      <a class="cta" href="https://www.schischule-gargellen.at/images/Preisliste_de25-26.pdf" target="_blank" rel="noopener">-&gt; PDF</a>
     </div>
+  </div>
+</div>
+
+<!-- ======================= PREISE ======================= -->
+<div class="view" id="v-preise">
+  <div class="pad">
+    <h2 class="sec" style="margin-top:4px">PREISLISTE 2025/26</h2>
+    <p class="note">Alle Preise aus dem Online-Shop der Schischule. Gruppenkurse: 2 Stunden pro Einheit — bei 2 Einheiten am selben Tag gibt es 25&nbsp;% Rabatt auf die zweite.</p>
+
+    <h2 class="sec">KINDER</h2>
+    <div class="card">
+      <h3>Kükenkurs <span style="font-weight:500;color:var(--grey)">· ab 4 Jahren</span></h3>
+      <p class="note" style="margin:2px 0 4px">2 Std. am Vormittag, nur im Schmuggi Luggi Kinderland (Hochsaison auch nachmittags).</p>
+      <table class="pr">
+        <tr><td>1 Tag</td><td>€ 68,00</td></tr>
+        <tr><td>2 Tage</td><td>€ 136,00</td></tr>
+        <tr><td>3 Tage</td><td>€ 204,00</td></tr>
+        <tr><td>4 Tage</td><td>€ 272,00</td></tr>
+        <tr><td>5 Tage</td><td>€ 340,00</td></tr>
+        <tr><td>6 Tage</td><td>€ 408,00</td></tr>
+      </table>
+      <a class="cta dark" href="https://www.schischule-gargellen.at/de/component/jshopping/category/view/14?Itemid=0" target="_blank" rel="noopener">-&gt; BUCHEN</a>
+    </div>
+    <div class="card">
+      <h3>Kinder — Anfänger</h3>
+      <table class="pr">
+        <tr><td>3 Tage<span class="sub">Kursstart Sonntag, Mittwoch auf Anfrage</span></td><td>€ 231,00</td></tr>
+        <tr><td>5 Tage<span class="sub">Kursstart Sonntag</span></td><td>€ 292,00</td></tr>
+      </table>
+      <a class="cta dark" href="https://www.schischule-gargellen.at/de/component/jshopping/category/view/10?Itemid=0" target="_blank" rel="noopener">-&gt; BUCHEN</a>
+    </div>
+    <div class="card">
+      <h3>Kinder — Fortgeschritten <span style="font-weight:500;color:var(--grey)">· K2–K5</span></h3>
+      <table class="pr">
+        <tr><td>3 Tage<span class="sub">Zeit wählbar: 10–12 oder 13–15 Uhr</span></td><td>€ 231,00</td></tr>
+        <tr><td>5 Tage<span class="sub">Ganztag: 25 % Rabatt auf 2. Einheit</span></td><td>€ 292,00</td></tr>
+      </table>
+      <a class="cta dark" href="https://www.schischule-gargellen.at/de/component/jshopping/category/view/11?Itemid=0" target="_blank" rel="noopener">-&gt; BUCHEN</a>
+    </div>
+    <div class="card">
+      <table class="pr">
+        <tr><td>Mittagsbetreuung<span class="sub">pro Tag &amp; Kind, nicht bei Anfängerkursen</span></td><td>€ 15,00</td></tr>
+        <tr><td>Geschenk: Kinderbuch<span class="sub">zum Lesen &amp; Vorlesen nach dem Schikurs</span></td><td>€ 15,90</td></tr>
+      </table>
+    </div>
+
+    <h2 class="sec">ERWACHSENE</h2>
+    <div class="card">
+      <h3>Erwachsene — Anfänger</h3>
+      <table class="pr">
+        <tr><td>3 Tage<span class="sub">Kursstart Montag, Mittwoch auf Anfrage</span></td><td>€ 231,00</td></tr>
+        <tr><td>5 Tage<span class="sub">Kursstart Montag</span></td><td>€ 292,00</td></tr>
+      </table>
+      <a class="cta dark" href="https://www.schischule-gargellen.at/de/component/jshopping/category/view/4?Itemid=0" target="_blank" rel="noopener">-&gt; BUCHEN</a>
+    </div>
+    <div class="card">
+      <h3>Erwachsene — Fortgeschritten <span style="font-weight:500;color:var(--grey)">· E2–E5</span></h3>
+      <table class="pr">
+        <tr><td>3 Tage<span class="sub">E2–E4 vormittags, E5 nachmittags</span></td><td>€ 231,00</td></tr>
+        <tr><td>5 Tage</td><td>€ 292,00</td></tr>
+      </table>
+      <a class="cta dark" href="https://www.schischule-gargellen.at/de/component/jshopping/category/view/5?Itemid=0" target="_blank" rel="noopener">-&gt; BUCHEN</a>
+    </div>
+
+    <h2 class="sec">SNOWBOARD</h2>
+    <div class="card">
+      <h3>Snowboard — Anfänger</h3>
+      <table class="pr">
+        <tr><td>3 Tage<span class="sub">vormittags · Kursstart Sonntag, Mittwoch auf Anfrage</span></td><td>€ 231,00</td></tr>
+        <tr><td>5 Tage<span class="sub">Kursstart Sonntag</span></td><td>€ 292,00</td></tr>
+      </table>
+      <a class="cta dark" href="https://www.schischule-gargellen.at/de/component/jshopping/category/view/6?Itemid=0" target="_blank" rel="noopener">-&gt; BUCHEN</a>
+    </div>
+    <div class="card">
+      <h3>Snowboard — Fortgeschritten</h3>
+      <table class="pr">
+        <tr><td>3 Tage<span class="sub">nachmittags</span></td><td>€ 231,00</td></tr>
+        <tr><td>5 Tage</td><td>€ 292,00</td></tr>
+      </table>
+      <a class="cta dark" href="https://www.schischule-gargellen.at/de/component/jshopping/category/view/7?Itemid=0" target="_blank" rel="noopener">-&gt; BUCHEN</a>
+    </div>
+
+    <h2 class="sec">PRIVAT · SCHI &amp; SNOWBOARD</h2>
+    <div class="card">
+      <h3>Privatlehrer/in <span style="font-weight:500;color:var(--grey)">· alle Levels</span></h3>
+      <p class="note" style="margin:2px 0 4px">Bis zu 4 zusätzliche Personen zubuchbar (Aufpreis im Shop).</p>
+      <table class="pr">
+        <tr><td>1 Tag</td><td>€ 211,00</td></tr>
+        <tr><td>2 Tage</td><td>€ 422,00</td></tr>
+        <tr><td>3 Tage</td><td>€ 633,00</td></tr>
+        <tr><td>4 Tage</td><td>€ 844,00</td></tr>
+        <tr><td>5 Tage</td><td>€ 1.055,00</td></tr>
+        <tr><td>6 Tage</td><td>€ 1.266,00</td></tr>
+      </table>
+      <table class="pr" style="margin-top:8px">
+        <tr><td>Early Bird Privatstunde<span class="sub">09:00–10:00 Uhr, auf Anfrage</span></td><td>€ 98,00</td></tr>
+      </table>
+      <a class="cta dark" href="https://www.schischule-gargellen.at/de/component/jshopping/category/view/8?Itemid=0" target="_blank" rel="noopener">-&gt; BUCHEN</a>
+      <a class="cta dark" href="mailto:info@schischule-gargellen.at?subject=Early%20Bird%20Privatstunde">-&gt; EARLY BIRD ANFRAGEN</a>
+    </div>
+
+    <h2 class="sec">SCHITOUR</h2>
+    <div class="card">
+      <table class="pr">
+        <tr><td>Geführte Schitouren &amp; Abseits-der-Piste<span class="sub">individuell nach Gruppe &amp; Ziel</span></td><td>auf Anfrage</td></tr>
+      </table>
+      <a class="cta dark" href="mailto:info@schischule-gargellen.at?subject=Schitour">-&gt; ANFRAGEN</a>
+    </div>
+
+    <div class="hint">Preise Saison 2025/26, übernommen aus dem Online-Shop der Schischule (Stand Juli 2026). Verbindlich sind die Preise im <a href="https://www.schischule-gargellen.at/de/component/jshopping/category/view/14?Itemid=0" target="_blank" rel="noopener"><b>Online-Shop</b></a> bzw. die <a href="https://www.schischule-gargellen.at/images/Preisliste_de25-26.pdf" target="_blank" rel="noopener"><b>offizielle Preisliste (PDF)</b></a>.</div>
   </div>
 </div>
 

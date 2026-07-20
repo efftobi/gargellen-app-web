@@ -1,5 +1,5 @@
 /* Schischule Gargellen — Service Worker */
-const CACHE = 'gargellen-v2';
+const CACHE = 'gargellen-v3';
 const SHELL = [
   './',
   './index.html',
